@@ -97,3 +97,4 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   #tree ul { display: flex; flex-wrap: wrap; gap: 4px; }
   .brand { display: none; }
 }
+#view-buttons button.active { border-color: var(--accent); color: var(--accent); background: #eff6ff; }

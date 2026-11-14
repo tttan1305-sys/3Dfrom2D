@@ -25,6 +25,7 @@ export class Viewport {
   private readonly pointer = new THREE.Vector2();
   private viewAnimation: { from: THREE.Vector3; to: THREE.Vector3; t: number } | null = null;
   private onPlaneSelect: (id: PlaneId | null) => void = () => {};
+  private grid!: THREE.GridHelper;
 
   constructor(private readonly container: HTMLElement) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -75,6 +76,11 @@ export class Viewport {
     this.viewAnimation = { from: this.camera.position.clone(), to, t: 0 };
   }
 
+  toggleGrid(): boolean {
+    this.grid.visible = !this.grid.visible;
+    return this.grid.visible;
+  }
+
   zoomToFit(): void {
     this.controls.target.set(0, 0, 0);
     const dir = this.camera.position.clone().normalize();
@@ -88,9 +94,11 @@ export class Viewport {
     sun.position.set(200, 300, 150);
     this.scene.add(sun);
 
-    const grid = new THREE.GridHelper(600, 60, 0xb6c2d1, 0xd5dde7);
-    grid.position.y = -0.01;
-    this.scene.add(grid);
+    // Floor grid is hidden by default; the "Grid" button toggles it.
+    this.grid = new THREE.GridHelper(600, 60, 0xb6c2d1, 0xd5dde7);
+    this.grid.position.y = -0.01;
+    this.grid.visible = false;
+    this.scene.add(this.grid);
 
     this.scene.add(this.makeOriginTriad());
 

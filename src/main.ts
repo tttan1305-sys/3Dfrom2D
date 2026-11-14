@@ -69,9 +69,12 @@ const views: { id: ViewId | "fit"; label: string }[] = [
   { id: "fit", label: "Fit" },
 ];
 const viewButtons = $("#view-buttons");
-viewButtons.innerHTML = views
-  .map((v) => `<button data-view="${v.id}">${v.label}</button>`)
-  .join("");
+viewButtons.innerHTML =
+  views.map((v) => `<button data-view="${v.id}">${v.label}</button>`).join("") +
+  `<button data-grid title="Bật/tắt lưới (G)">Grid</button>`;
+const gridButton = $<HTMLButtonElement>("button[data-grid]");
+const toggleGrid = () => gridButton.classList.toggle("active", viewport.toggleGrid());
+gridButton.addEventListener("click", toggleGrid);
 viewButtons.addEventListener("click", (e) => {
   const btn = (e.target as HTMLElement).closest<HTMLElement>("button[data-view]");
   if (!btn) return;
@@ -82,6 +85,7 @@ viewButtons.addEventListener("click", (e) => {
 
 window.addEventListener("keydown", (e) => {
   if (e.target instanceof HTMLInputElement) return;
+  if (e.key.toLowerCase() === "g") return toggleGrid();
   const map: Record<string, ViewId | "fit"> = { "1": "front", "5": "top", "3": "right", "0": "iso", f: "fit" };
   const v = map[e.key.toLowerCase()];
   if (!v) return;

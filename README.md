@@ -33,4 +33,4 @@ Mỗi lần đẩy code lên GitHub, workflow **Desktop build** tự tạo file 
 | Zoom | Cuộn chuột | Chụm 2 ngón |
 | Chọn mặt phẳng | Nhấp vào mặt phẳng hoặc trong Feature Tree | Chạm |
 
-Phím tắt hướng nhìn: `1` Front, `5` Top, `3` Right, `0` Iso, `F` Fit.
+Phím tắt hướng nhìn: `1` Front, `5` Top, `3` Right, `0` Iso, `F` Fit, `G` bật/tắt lưới (mặc định tắt).
