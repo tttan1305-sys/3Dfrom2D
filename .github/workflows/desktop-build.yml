@@ -26,7 +26,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
       - run: npm ci
-      - run: npx tauri build
+      # Installers for testing only; signed updater files are made by release.yml.
+      - run: npx tauri build --config src-tauri/tauri.ci.conf.json
       - uses: actions/upload-artifact@v4
         with:
           name: 3Dfrom2D-${{ matrix.os }}

@@ -16,9 +16,9 @@ html, body { margin: 0; height: 100%; background: var(--bg); overflow: hidden; }
 
 #app {
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: 220px minmax(0, 1fr);
   grid-template-rows: 48px 1fr;
-  grid-template-areas: "toolbar toolbar" "tree viewport";
+  grid-template-areas: "toolbar toolbar" "sidebar viewport";
   height: 100vh;
 }
 
@@ -32,7 +32,8 @@ html, body { margin: 0; height: 100%; background: var(--bg); overflow: hidden; }
   border-bottom: 1px solid var(--border);
 }
 .brand { font-weight: 700; color: var(--accent); }
-.tools { display: flex; gap: 6px; overflow-x: auto; }
+.tools { display: flex; gap: 6px; overflow-x: auto; min-width: 0; flex: 1 1 auto; }
+#toolbar { overflow: hidden; }
 
 button {
   font: inherit;
@@ -47,12 +48,19 @@ button {
 button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
 button:disabled { opacity: 0.45; cursor: not-allowed; }
 
-#tree {
-  grid-area: tree;
+#sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   background: var(--panel);
   border-right: 1px solid var(--border);
+}
+#tree {
+  background: var(--panel);
   padding: 10px 8px;
   overflow-y: auto;
+  flex: 1;
 }
 .tree-title { font-weight: 600; padding: 4px 8px; }
 #tree ul { list-style: none; margin: 4px 0; padding: 0 0 0 10px; }
@@ -89,12 +97,67 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 /* Phone / narrow screens: feature tree becomes a strip above the viewport. */
 @media (max-width: 700px) {
   #app {
-    grid-template-columns: 1fr;
-    grid-template-rows: 48px auto 1fr;
-    grid-template-areas: "toolbar" "tree" "viewport";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 48px auto minmax(0, 1fr);
+    grid-template-areas: "toolbar" "sidebar" "viewport";
   }
-  #tree { border-right: none; border-bottom: 1px solid var(--border); max-height: 120px; }
+  #sidebar { border-right: none; border-bottom: 1px solid var(--border); max-height: 40vh; }
+  #tree { max-height: 120px; }
   #tree ul { display: flex; flex-wrap: wrap; gap: 4px; }
-  .brand { display: none; }
+  .brand, .sketch-name { display: none; }
+  #toolbar { gap: 8px; padding: 0 8px; }
+  #view-buttons { left: 8px; right: 8px; justify-content: flex-end; flex-wrap: wrap; }
+  #dim-box { bottom: 48px; }
 }
 #view-buttons button.active { border-color: var(--accent); color: var(--accent); background: #eff6ff; }
+
+/* ---- Sketch mode ---- */
+#toolbar .tools { align-items: center; }
+.sep { width: 1px; height: 22px; background: var(--border); margin: 0 4px; flex: none; }
+button.active { border-color: var(--accent); color: var(--accent); background: #eff6ff; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary:hover:not(:disabled) { color: #fff; filter: brightness(1.1); }
+button.danger { color: #b91c1c; }
+button.update { background: #16a34a; border-color: #16a34a; color: #fff; }
+button.icon { padding: 0 6px; border: none; background: transparent; color: var(--muted); font-size: 16px; }
+.sketch-name { margin-left: auto; color: var(--muted); white-space: nowrap; }
+#update-slot { margin-left: auto; }
+
+#tree li.sketch { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+#tree li.sketch small { color: var(--muted); font-size: 11px; display: block; }
+#tree li.sketch.editing { background: #e0ecff; }
+
+#props {
+  border-top: 1px solid var(--border);
+  padding: 10px 12px;
+  display: grid;
+  gap: 6px;
+  overflow-y: auto;
+}
+.props-title { font-weight: 600; margin-bottom: 2px; }
+#props label { display: grid; grid-template-columns: 1fr 90px; align-items: center; gap: 8px; font-size: 13px; }
+#props input, #dim-box input {
+  font: inherit;
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+#dim-box {
+  position: absolute;
+  left: 50%;
+  bottom: 44px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+  font-size: 13px;
+}
+#dim-box[hidden], #props[hidden] { display: none; }
+#dim-box input { width: 110px; }

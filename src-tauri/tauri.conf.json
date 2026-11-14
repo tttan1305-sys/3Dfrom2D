@@ -11,13 +11,40 @@
   },
   "app": {
     "windows": [
-      { "label": "main", "title": "3Dfrom2D", "width": 1280, "height": 800, "minWidth": 800, "minHeight": 500 }
+      {
+        "label": "main",
+        "title": "3Dfrom2D",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 500
+      }
     ],
-    "security": { "csp": null }
+    "security": {
+      "csp": null
+    }
   },
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"]
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDc0MzIzMjk3OTFFRDA3RDYKUldUV0IrMlJsekl5ZEx0NjM1QTlFSktWOWtnVTRWVEw0QjNZU0RKaUZ2VVhEWTZ3cUh6eUliWk4K",
+      "endpoints": [
+        "https://github.com/tttan1305-sys/3Dfrom2D/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }
