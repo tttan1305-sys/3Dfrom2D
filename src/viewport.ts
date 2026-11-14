@@ -10,7 +10,7 @@ const PLANE_SELECTED_COLOR = 0xf59e0b;
 
 /**
  * The 3D viewport: scene, camera, mouse/touch navigation and the three
- * reference planes (Front = XY, Top = XZ, Right = YZ, Y is up).
+ * reference planes (mặt đứng = XY, mặt bằng = XZ, mặt cạnh = YZ, Y is up).
  */
 export class Viewport {
   readonly scene = new THREE.Scene();
@@ -103,9 +103,9 @@ export class Viewport {
     this.scene.add(this.makeOriginTriad());
 
     const half = Math.PI / 2;
-    this.addPlane("front", new THREE.Euler(0, 0, 0), "Front");
-    this.addPlane("top", new THREE.Euler(-half, 0, 0), "Top");
-    this.addPlane("right", new THREE.Euler(0, half, 0), "Right");
+    this.addPlane("front", new THREE.Euler(0, 0, 0), "Mặt đứng");
+    this.addPlane("top", new THREE.Euler(-half, 0, 0), "Mặt bằng");
+    this.addPlane("right", new THREE.Euler(0, half, 0), "Mặt cạnh");
   }
 
   private addPlane(id: PlaneId, rotation: THREE.Euler, label: string): void {
@@ -133,7 +133,7 @@ export class Viewport {
     border.name = "border";
 
     const tag = this.makeLabel(label);
-    tag.position.set(-PLANE_SIZE / 2 + 12, PLANE_SIZE / 2 - 6, 0);
+    tag.position.set(-PLANE_SIZE / 2 + 18, PLANE_SIZE / 2 - 6, 0);
 
     group.add(fill, border, tag);
     this.planes.set(id, group);
@@ -156,7 +156,7 @@ export class Viewport {
 
   private makeLabel(text: string): THREE.Sprite {
     const canvas = document.createElement("canvas");
-    canvas.width = 128;
+    canvas.width = 192;
     canvas.height = 48;
     const ctx = canvas.getContext("2d")!;
     ctx.font = "600 28px system-ui, sans-serif";
@@ -166,7 +166,7 @@ export class Viewport {
     const sprite = new THREE.Sprite(
       new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), depthTest: false }),
     );
-    sprite.scale.set(24, 9, 1);
+    sprite.scale.set(36, 9, 1);
     return sprite;
   }
 

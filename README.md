@@ -6,7 +6,7 @@ Chạy trên máy tính (Windows, macOS, Linux) qua Tauri; cùng mã nguồn s�
 
 ## Lộ trình
 
-1. **Khung ứng dụng desktop**: khung nhìn 3D, 3 mặt phẳng chuẩn, Feature Tree, thanh công cụ. *(đã xong)*
+1. **Khung ứng dụng desktop**: khung nhìn 3D, 3 mặt phẳng chuẩn (mặt đứng, mặt bằng, mặt cạnh), Feature Tree, thanh công cụ. *(đã xong)*
 2. **Sketch 2D**: vẽ line, rectangle, circle, arc trên mặt phẳng, nhập kích thước.
 3. **Dựng 3D**: Extrude, Revolve, Cut (nhân hình học OpenCascade), sửa kích thước trong Feature Tree.
 4. **Lưu / xuất file và điện thoại**: lưu dự án, xuất STL/STEP, bản Android thử nghiệm.
@@ -33,4 +33,4 @@ Mỗi lần đẩy code lên GitHub, workflow **Desktop build** tự tạo file 
 | Zoom | Cuộn chuột | Chụm 2 ngón |
 | Chọn mặt phẳng | Nhấp vào mặt phẳng hoặc trong Feature Tree | Chạm |
 
-Phím tắt hướng nhìn: `1` Front, `5` Top, `3` Right, `0` Iso, `F` Fit, `G` bật/tắt lưới (mặc định tắt).
+Phím tắt hướng nhìn: `1` Đứng, `5` Bằng, `3` Cạnh, `0` Iso, `F` Fit, `G` bật/tắt lưới (mặc định tắt).

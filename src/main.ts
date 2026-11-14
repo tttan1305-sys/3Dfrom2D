@@ -2,9 +2,9 @@ import "./style.css";
 import { Viewport, type PlaneId, type ViewId } from "./viewport";
 
 const PLANE_NAMES: Record<PlaneId, string> = {
-  front: "Front Plane",
-  top: "Top Plane",
-  right: "Right Plane",
+  front: "Mặt đứng",
+  top: "Mặt bằng",
+  right: "Mặt cạnh",
 };
 
 const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
@@ -54,7 +54,7 @@ function onPlaneSelected(id: PlaneId | null): void {
   });
   $<HTMLButtonElement>('button[data-tool="sketch"]').disabled = id === null;
   status.textContent = id
-    ? `Đã chọn ${PLANE_NAMES[id]}. Lệnh Sketch sẽ có ở Bước 2.`
+    ? `Đã chọn ${PLANE_NAMES[id].toLowerCase()}. Lệnh Sketch sẽ có ở Bước 2.`
     : "Chọn một mặt phẳng để bắt đầu.";
 }
 viewport.setPlaneSelectHandler(onPlaneSelected);
@@ -62,9 +62,9 @@ onPlaneSelected(null);
 
 // ---- View buttons --------------------------------------------------------
 const views: { id: ViewId | "fit"; label: string }[] = [
-  { id: "front", label: "Front" },
-  { id: "top", label: "Top" },
-  { id: "right", label: "Right" },
+  { id: "front", label: "Đứng" },
+  { id: "top", label: "Bằng" },
+  { id: "right", label: "Cạnh" },
   { id: "iso", label: "Iso" },
   { id: "fit", label: "Fit" },
 ];
