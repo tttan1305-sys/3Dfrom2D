@@ -2,6 +2,8 @@ import { defineConfig } from "vite";
 
 // Tauri expects a fixed port and the dist/ folder.
 export default defineConfig({
+  // Relative paths so the same build works in Tauri and on GitHub Pages.
+  base: "./",
   clearScreen: false,
   server: { port: 1420, strictPort: true },
   // OpenCascade (step 3) is large, so raise the warning limit.

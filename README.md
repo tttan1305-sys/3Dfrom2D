@@ -11,6 +11,10 @@ Chạy trên máy tính (Windows, macOS, Linux) qua Tauri; cùng mã nguồn s�
 3. **Dựng 3D**: Extrude, Revolve, Cut (nhân hình học OpenCascade), sửa kích thước trong Feature Tree.
 4. **Lưu / xuất file và điện thoại**: lưu dự án, xuất STL/STEP, bản Android thử nghiệm.
 
+## Dùng thử không cần cài
+
+Bản web luôn cập nhật theo nhánh `main`: https://tttan1305-sys.github.io/3Dfrom2D/
+
 ## Chạy thử
 
 Cần [Node.js 22+](https://nodejs.org). Để chạy dạng phần mềm desktop cần thêm [Rust và các thư viện hệ thống của Tauri](https://tauri.app/start/prerequisites/).
