@@ -8,10 +8,14 @@
   <body>
     <div id="app">
       <header id="toolbar"></header>
-      <aside id="tree"></aside>
+      <aside id="sidebar">
+        <div id="tree"></div>
+        <div id="props" hidden></div>
+      </aside>
       <main id="viewport">
         <div id="view-buttons"></div>
         <div id="status"></div>
+        <label id="dim-box" hidden><span id="dim-label"></span><input id="dim-input" inputmode="decimal" autocomplete="off" /></label>
       </main>
     </div>
     <script type="module" src="/src/main.ts"></script>

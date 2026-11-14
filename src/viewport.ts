@@ -26,6 +26,7 @@ export class Viewport {
   private viewAnimation: { from: THREE.Vector3; to: THREE.Vector3; t: number } | null = null;
   private onPlaneSelect: (id: PlaneId | null) => void = () => {};
   private grid!: THREE.GridHelper;
+  private sketchPlane: PlaneId | null = null;
 
   constructor(private readonly container: HTMLElement) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -74,6 +75,54 @@ export class Viewport {
     }[view].normalize();
     const to = this.controls.target.clone().add(dir.multiplyScalar(dist));
     this.viewAnimation = { from: this.camera.position.clone(), to, t: 0 };
+  }
+
+  /**
+   * Enter (id) or leave (null) sketch mode: look straight at the plane,
+   * hide the other planes, and stop the left button / one finger from
+   * rotating so they can be used for drawing.
+   */
+  setSketchMode(id: PlaneId | null): void {
+    this.sketchPlane = id;
+    this.hoveredPlane = null;
+    for (const [pid, group] of this.planes) {
+      for (const name of ["fill", "border", "label"]) {
+        group.getObjectByName(name)!.visible = id === null || (pid === id && name !== "label");
+      }
+    }
+    if (id) {
+      this.controls.enableRotate = false;
+      this.controls.mouseButtons = { MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN } as typeof this.controls.mouseButtons;
+      this.controls.touches = { TWO: THREE.TOUCH.DOLLY_PAN } as typeof this.controls.touches;
+      this.setView(id);
+    } else {
+      this.controls.enableRotate = true;
+      this.controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.ROTATE, RIGHT: THREE.MOUSE.PAN };
+      this.controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
+    }
+    this.refreshPlaneColors();
+  }
+
+  /** Where the pointer hits the (infinite) plane, in the plane's 2D coordinates. */
+  pointerOnPlane(id: PlaneId, clientX: number, clientY: number): THREE.Vector2 | null {
+    const group = this.planes.get(id)!;
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    this.pointer.set(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1);
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+    group.updateMatrixWorld();
+    const normal = new THREE.Vector3(0, 0, 1).transformDirection(group.matrixWorld);
+    const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(normal, group.getWorldPosition(new THREE.Vector3()));
+    const hit = this.raycaster.ray.intersectPlane(plane, new THREE.Vector3());
+    if (!hit) return null;
+    const local = group.worldToLocal(hit);
+    return new THREE.Vector2(local.x, local.y);
+  }
+
+  /** World units covered by one screen pixel at the orbit target. */
+  pixelSize(): number {
+    const dist = this.camera.position.distanceTo(this.controls.target);
+    const h = 2 * dist * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
+    return h / Math.max(1, this.renderer.domElement.clientHeight);
   }
 
   toggleGrid(): boolean {
@@ -133,6 +182,7 @@ export class Viewport {
     border.name = "border";
 
     const tag = this.makeLabel(label);
+    tag.name = "label";
     tag.position.set(-PLANE_SIZE / 2 + 18, PLANE_SIZE / 2 - 6, 0);
 
     group.add(fill, border, tag);
@@ -175,6 +225,7 @@ export class Viewport {
     let downAt: { x: number; y: number } | null = null;
 
     el.addEventListener("pointermove", (e) => {
+      if (this.sketchPlane) return;
       this.hoveredPlane = this.pickPlane(e);
       this.refreshPlaneColors();
     });
@@ -183,7 +234,7 @@ export class Viewport {
     });
     el.addEventListener("pointerup", (e) => {
       // A click (not a drag) selects the plane under the cursor.
-      if (!downAt || e.button !== 0) return;
+      if (!downAt || e.button !== 0 || this.sketchPlane) return;
       const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y);
       downAt = null;
       if (moved > 4) return;
@@ -208,13 +259,13 @@ export class Viewport {
 
   private refreshPlaneColors(): void {
     for (const [id, group] of this.planes) {
-      const active = id === this.selectedPlane;
+      const active = id === this.selectedPlane && !this.sketchPlane;
       const hover = id === this.hoveredPlane;
       const color = active ? PLANE_SELECTED_COLOR : PLANE_COLOR;
       const fill = group.getObjectByName("fill") as THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>;
       const border = group.getObjectByName("border") as THREE.LineSegments<THREE.BufferGeometry, THREE.LineBasicMaterial>;
       fill.material.color.setHex(color);
-      fill.material.opacity = active ? 0.22 : hover ? 0.16 : 0.08;
+      fill.material.opacity = this.sketchPlane ? 0.04 : active ? 0.22 : hover ? 0.16 : 0.08;
       border.material.color.setHex(color);
     }
     this.renderer.domElement.style.cursor = this.hoveredPlane ? "pointer" : "default";
